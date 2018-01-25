@@ -1,54 +1,33 @@
-import React from 'react';
+ import React from 'react';
 import Info from './info'
+import {Link} from 'react-router-dom'
 
 class Book extends React.Component {
 
 	constructor(){
 		super();
 		this.state={
-			contact: [],
-			input: '',
-			name: '',
-			number: '',
-			address: ''
+			contact:[]
 		}
-		this.saveAddress = this.saveAddress.bind(this)
-		this.handleChange = this.handleChange.bind(this)
 
 	}
-	saveAddress(event){
-		event.preventDefault()
+	componentDidMount() {
+    	this.setState({
+    		contact: this.props.location.state.contact
+    	})
+  	}
 
-		var newContact = {
-			name: this.state.name,
-			number: this.state.number,
-			address:this.state.address
-		}
-		console.log(newContact)
+	handleDelete(event){
 		this.setState({
-			contact: this.state.contact.concat(newContact),
-			input: '',
-		})
-	}
-	handleChange(event){
-		var target = event.target
-		var value = target.value
-		var name = target.name
-
-		this.setState({
-			[name]:value
+			contact: this.state.contact.filter( (i)=>i !== event )
 		})
 	}
 	render(){
-		const info = this.state.contact.map((item, index)=><Info key={index} name={item.name} number={item.number} address={item.address}/>)
+		console.log(this.state)
+			const info = this.state.contact.map((item, index)=><Info key={index} name={item.name} number={item.number} address={item.address}/>)
+		
 		return (
 			<div>
-				<form>
-					<input placeholder="NAME" name="name"  onChange={this.handleChange}/>
-					<input placeholder="NUMBER" name="number" onChange={this.handleChange}/>
-					<input placeholder="ADDRESS" name="address" onChange={this.handleChange} />
-					<button onClick={this.saveAddress}>SAVE!</button>
-				</form>
 				<div className="container">
 					<div className="row">
 						<div className='col-md-3'>
@@ -61,9 +40,16 @@ class Book extends React.Component {
 							Address
 						</div>
 					</div>
-						{info}
 				</div>
+				{info}
+				<br/>
+				<Link to={{
+					pathname:"/",
+					state: {contact: this.state.contact}
+				}}>Add more contacts</Link>
 			</div>
+
+			
 			)
 	}
 }
